@@ -1,0 +1,2 @@
+# scala-edu
+study scala
