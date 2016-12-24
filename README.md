@@ -17,3 +17,13 @@ study scala
   * 혼합 식별자는 영숫자 뒤 밑줄이 오고 그 다음 연산자 식별자가 온다. `unary_+`, `myvar_=`
   * 리터럴 식별자 `...` 역따옴표로 둘러싼 문자열.
   * yield는 스칼라의 식별자이므로 Thread.yield()가 아닌 Thread.`yield`()로 해야 함.
+
+* 내장 제어 
+  * while문은 표현식이 아니라 루프문
+  * 할당의 결과는 Unit이므로 아래 코드는 ()과 ""를 비교하는 것이므로 항상 false.
+```
+var line = ""
+while ((line = readLine()) != "") // 작동하지 않음.
+  println("Read : " + line)
+```
+  * try/catch 절도 표현식이다. finally에서는 값을 변경하지 말고 자원의 release만을 담당. `def f(): Int = try { return 1 } finally { return 2 }`의 결과는 2이고 `def g(): Int = try { 1 } finally { 2 }`의 결과는 1이다. 
