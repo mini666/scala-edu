@@ -35,6 +35,8 @@ class Rational(n: Int, d: Int) {      // 주 생성
   private def gcd(a: Int, b: Int): Int = 
     if (b == 0) a else gcd(b, a % b)
   
+  private def gcd(x: Long, y: Long): Long = 
+    if (y == 0) x else gcd(y, x %y)
 }
 
 // r * 2는 r.*(2) 이므로 가능하나 2 * r은 2.*(r) 이므로 불가능하다. 이를 암시적변환을 통해 해결한다.
