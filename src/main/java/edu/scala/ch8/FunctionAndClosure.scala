@@ -16,7 +16,7 @@ class FunctionAndClosure {
   }
   
   // 부분 함수.
-  def partialFunction() : Unit => {
+  def partialFunction() : Unit = {
     def sum(a: Int, b: Int, c: Int) = a + b + c      // only declarations allowed here
     
     sum(1, 2, 3)
@@ -27,7 +27,6 @@ class FunctionAndClosure {
     
     val b = sum(1, _: Int, 3)
     b(2)    // result = 6
-    
   }
   
   def callFunction() : Unit = {
