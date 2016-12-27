@@ -45,3 +45,20 @@ while ((line = readLine()) != "") // 작동하지 않음.
   * 필드가 파라미터 없는 메서드를 오버라이드할 수 있다.
   * 일반적으로 자바에는 4개의 네임스페이스(필드, 메서드, 타입, 패키지)가 있는 반면 스칼라는 2개(값:(필드,메서드,패키지,싱글톤객체), 타입(클래스,트레이트))만 있다.
   * 깨지기 쉬운 기반클래스 문제 - 상위 클래스에서 메서드를 추가할때 해당 메서드가 이미 하위 클래스에 존재하는 경우.
+
+* 스칼라의 계층 구조.
+  * 모든 클래스는 Any의 서브 클래스, Nothing은 모든 다른 클래스의 서브클래스.
+  * Any의 하위 클래스로 AnyVal, AnyRef가 있으며 AnyVal의 하위 클래스(Int, Long, Float, Double, Short, Byte, Boolean, Char, Unit)를 제외한 나머지 클래스는 모두 AnyRef를 상속한다. 
+  * 스칼라 클래스들은 ScalaObject(ScalaObject도 AnyRef의 하위클래스)를 상속하고 
+  * Null은 AnyRef를 상속하는 모든 클래스의 서브클래스이다.
+  * Nothing은 AnyRef, AnyVal을 포함한 모든 클래스의 서브클래스이다.
+  * Any에 있는 메서드.
+    * final def ==(that: Any): Boolean
+    * final def !=(that: Any): Boolean
+    * def equals(that: Any): Boolean
+    * def ##: Int
+    * def hashCode: Int
+    * def toString: String
+  * ==와 equals는 동일. ##와 hashCode는 동일. ==와 !=는 final이므로 override할 수 없고 equals를 override해야 함.
+  * 참조비교를 위해서는 AnyRef에 있는 eq, ne를 이용.
+  * Nothing의 쓸모중 하나는 비정상종료를 표시하는 것. 모든 클래스의 공통클래스이므로 어느 함수에서나 사용 가능하다.
