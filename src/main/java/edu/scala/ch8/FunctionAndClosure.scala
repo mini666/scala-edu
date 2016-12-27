@@ -74,10 +74,11 @@ class FunctionAndClosure {
   }
 }
 
-//
-//object FunctionAndClosure {
-//  
-//  def main(args: Array[String]) : Unit = {
-//    // FunctionAndClosure 클래스를 어떻게 생성하는가? Companion Object 에서는 생성할 수 없는가?
-//  }
-//}
+
+object FunctionAndClosure {
+  
+  def main(args: Array[String]): Unit = {
+    val functionAndClosure = new FunctionAndClosure()
+    functionAndClosure.tailRecursize()
+  }
+}

@@ -1,6 +1,6 @@
 package edu.scala.ch6
 
-class Rational(n: Int, d: Int) {      // 주 생성
+class Rational(n: Int, d: Int) extends Ordered[Rational] {      // 주 생성
   
   require(d != 0)
   private val g = gcd(n.abs, d.abs)
@@ -29,6 +29,10 @@ class Rational(n: Int, d: Int) {      // 주 생성
     new Rational(number * that.denom, denom * that.number)
   def /(i: Int): Rational =
     new Rational(number, denom * i)
+  
+  def compare(that: Rational): Int = {
+    (this.number * that.denom) - (that.number * this.denom)
+  }
   
   override def toString = number + "/" + denom
   
