@@ -61,4 +61,4 @@ while ((line = readLine()) != "") // 작동하지 않음.
     * def toString: String
   * ==와 equals는 동일. ##와 hashCode는 동일. ==와 !=는 final이므로 override할 수 없고 equals를 override해야 함.
   * 참조비교를 위해서는 AnyRef에 있는 eq, ne를 이용.
-  * Nothing의 쓸모중 하나는 비정상종료를 표시하는 것. 모든 클래스의 공통클래스이므로 어느 함수에서나 사용 가능하다.
+  * Nothing의 쓸모중 하나는 비정상종료를 표시하는 것. 모든 클래스의 공통클래스이므로 어느 함수에서나 사용 가능하다.
