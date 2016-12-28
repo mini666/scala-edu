@@ -67,6 +67,40 @@ while ((line = readLine()) != "") // 작동하지 않음.
   * 트레이트와 클래스의 다른점.
     * 클래스 파라미터를 가질 수 없다. 주 생성자에 전달할 파라미터를 트레이트 정의에 넣을 수 없다.
     * 클래스는 super호출을 정적으로 바인딩하고 트레이트는 동적으로 바인딩한다. 이로 인해 트레이트에서 Stackable Modification이 가능해진다.
-  * 비교에 의해 순서를 매길 수 있는 클래스 구현시 Ordered 트레이트 믹스인. <, <=, >, >= 지원.
-  * abstract override 메서드가 어떤 트레이트에  그 트레이트를 반드시 abstract override가 붙은 메서드에 대한 구체적 구현을 제공하는 클래스에 믹스인해야만 한다.
-  
+  * 비교에 의해 순서를 매길 수 있는 클래스 구현시 Ordered 트레이트 믹스인. <, <=, >, >= 지원.
+  * abstract override 메서드가 어떤 트레이트에  그 트레이트를 반드시 abstract override가 붙은 메서드에 대한 구체적 구현을 제공하는 클래스에 믹스인해야만 한다.
+  * 믹스인 순서가 중요. 오른쪽부터 먼저 적용한다.
+    * super를 호출하는 경우 선형화된 순서에서 오른쪽에 위치한 첫번째 구현부가 호출된다.
+    ```
+    class Animal
+    trait Furry extends Animal
+    trait HasLegs extends Animal
+    trait FourLegged extends HasLegs
+    class Cat extends Animal with Furry with FourLegged
+    ```
+    * Cat -> FourLegged -> HasLegs -> Furry -> Animal -> AnyRef -> Any
+  * 트레이트와 추상 클래스 선택.
+    * **어떤 행위를 재사용하지 않을 거라면**, 클래스.
+    * **서로 관련이 없는 클래스에서 어떤 행위를 여러 번 재사용해야 한다면**, 트레이트.
+    * **자바 코드에서 스칼라의 내용을 상속해야 한다면**, 추상 클래스. 자바에는 코드가 들어있는 트레이트와 같은 개변이 없어 트레이트를 상속하면 애매(자바8에서는?). 추상 메서드만 있는 트레이트는 자바의 인터페이스와 동일하므로 얼마든지 상속해도 좋음.
+    * **컴파일한 바이트코드 형태로 배포할 예정이고** 배포한 내용을 누군가가 상속해 사용할 것 같다면 추상 클래스. *특정 트레이트에 멤버를 추가하거나 제거하면, 그 트레이트를 상속하는 모든 클래스는 그 자신의 변경 여부와 관계없이 다시 컴파일해야만 한다.* 만일 코드를 이용하는 클라이언트 측에서 트레이트를 상속하지 않고 호출만 한다면 트레이트를 이용해도 문제 없음.
+    * **효율이 중요하다면** 클래스를 좀 더 사용. *자바 런타임은 클래스 멤버에 대한 가상 메서드 호출을 인터페이스의 메서드 호출보다 빠르게 수행.*
+    * **여전히 판단이 서지 않는다면** 트레이트 사용. 언제든지 클래스로 바꿀 수 있다.
+* 패키지와 임포트.
+  * 스칼라 임포트와 자바 임포트의 차이.
+    * 어느 곳에나 나타날 수 있다.
+    * 패키지뿐만 아니라 (싱글톤 또는 일반) 객체도 참조할 수 있다.
+    * 불러온 멤버 이름 중 일부를 숨기거나 다른 이름을 지정할 수 있다.
+  * 중괄호로 둘러싼 임포트 셀렉터를 사용하여 이름을 감추거나 바꿀수 있다.
+    * import Fruits.{Apple, Orange}
+    * import Fruits.{Apple => McIntosh, Orange}
+    * import java.{sql => s} : 패키지 이름 
+    * import Fruits.{Applie => McIntosh, _}
+    * import Fruits.{Pear => _, _} : Pear를 제외한 모든 이름 불러오기.
+  * 암시적 임포트.
+    * import java.lang._
+    * import scala._
+    * import Predef._
+  * 뒤에서 임포트한 것이 앞에서 임포트한 것을 가린다. StringBuilder는 java.lang.StringBuilder가 아닌 scala.StringBuilder를 가리킨다.
+  * 접근 수식자(제한자)
+    * private 멤버는 그 정의를 포함한 클래스나 객체 내부에서만 접근 가능. Inner Class
