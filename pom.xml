@@ -5,7 +5,8 @@
   <version>0.0.1-SNAPSHOT</version>
   
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src/main/scala</sourceDirectory>
+    <testSourceDirectory>src/test/scala</testSourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -17,4 +18,37 @@
       </plugin>
     </plugins>
   </build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest_2.11</artifactId>
+			<version>3.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.9.13.6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.specs2</groupId>
+			<artifactId>specs2-core_2.11</artifactId>
+			<version>3.8.6</version>
+      <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.scalacheck</groupId>
+			<artifactId>scalacheck_2.11</artifactId>
+			<version>1.13.4</version>
+      <scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>

@@ -103,4 +103,41 @@ while ((line = readLine()) != "") // 작동하지 않음.
     * import Predef._
   * 뒤에서 임포트한 것이 앞에서 임포트한 것을 가린다. StringBuilder는 java.lang.StringBuilder가 아닌 scala.StringBuilder를 가리킨다.
   * 접근 수식자(제한자)
-    * private 멤버는 그 정의를 포함한 클래스나 객체 내부에서만 접근 가능. Inner Class
+    * private 멤버는 그 정의를 포함한 클래스나 객체 내부에서만 접근 가능. Inner Class에도 동일하게 적용. 자바와 다르다?(코드 참고)
+    * protected 멤버는 자바보다 더 제한적. 멤버를 정의한 클래스의 서브클래스에서만 접근 가능. 자바는 동일 패키지에서도 접근 가능.
+    * 아무것도 없으면 public 이다.
+    * 보호 접근.
+    수식자 없음 | 전체 접근 가능(공개)
+    private[P] | 바깥쪽 패키지(P) 내부에서 접근 가능
+    private[P] | P가 자신의 패키지일때 자바의 패키지 접근과 동일
+    private[C] | C가 클래스일때 자바의 protected와 같음.
+    private[C] | C가 자기 자신일때 자바의 private과 같음.
+    private[this] | 자기 자신 객체에서만 접근 가능.
+  * 비공개 또는 보호 접근에 대해 동반 객체와 클래스에 동일한 권리를 준다. 클래스가 동반 객체의 비공개 멤버에 모두 접근할 수 있는 것처럼 객체도 동반 클래스의 모든 비공개 멤버에 접근할 수 있다.
+  * 싱글톤 객체의 서브클래스를 만들 수 없으므로 동반 객체 안에서 protected 멤버를 선언하는 것은 말이 안된다.
+  * 패키지 객체
+    * 패키지 전체 스코프에 도우미 메서드를 두고 싶다면 패키지 최상위 수준에 넣으면 된다. (자바의 유틸 클래스 내의 public static 메서드들?)
+    * 패키지 내에서 사용할 타입별명(type alias)과 암시적 변환을 넣기 위해 사용하는 경우가 많다.
+* 단언문과 단위테스트
+  * assert/ensuring 과 같은 Predef에 정의된 메서드 사용.
+  * JVM에 -ea나 -da 명령행 옵션을 사용하면 단언의 동작을 켜거나 끌 수 있다. => 역주: 실행해본 바로는(오라클 자바 1.8과 스칼라 2.11) -ea나 -da가 스칼라 단언문에는 영향을 끼치지 못한다. 다만 scalac에 -Xdisable-assertions를 명령행 인자로 넘기면 단언문을 아예 제거하고 컴파일한다.
+  * 스칼라에서 단위 테스트
+    * ScalaTest, Spec, ScalaCheck 등 다양한 도구 존재.
+    * ScalaTest
+      * scalatest.Suite를 확장하는 클래스를 만들어 테스트 메서드 정의.
+      * FunSuite를 확장하면 좀 더 편하게 테스트케이스 작성할 수 있음.
+      * '===' 연산자를 사용하면 '3 did not equal 2'와 같은 메시지를 볼 수 있다.
+      * expect(2) { ele.width }와 같이 사용하면 'Expected 2, but got 3'와 같은 메시지를 볼 수 있다.
+      * 발생되는 예외 체크에는 intercept[예외] { 코드 } 와 같이 사용한다.
+      * JUnit에서 ScalaTest의 단언 문법을 사용하기 원한다면 JUnit3Suite의 서브클래스를 만들면 된다.
+      * JUnitWrapperSuite를 사용하면 JUnit으로 작성한 자바 테스트를 ScalaTest를 통해 실행 가능하다.
+      * Junit4와 TestNG도 지원.
+    * 명세를 테스트로 사용하기
+      * **동작주도개발(BDD Behavior-Driven-Development)** 테스트 스타일은 기대하는 코드 동작을 사람이 읽을 수 있는 명세로 작성.
+      * ScalaTest는 Spec, WordSpec, FlatSpec, FeatureSpec등 여러 트레이트 제공.
+    * 프라퍼티 기반 테스트 - ScalaCheck
+      * 툴이 자동으로 프라퍼티에 대한 테스트 데이터를 생성하고 테스트 수행.
+    * 테스트 조직과 실행
+      * 수동으로 Suite를 처리하려면 nestedSuites 메서드를 오버라이드 하거나 포함시키고 싶은 Suite를 SuperSuite 클래스의 생성자에 전달.
+      * 자동으로 포함시키기 위해서는 ScalaTest의 Runner에 패키지 이름을 제공한다.
+  

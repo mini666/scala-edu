@@ -1,6 +1,6 @@
 package edu.scala.ch12
 
-class Trait {
+object Trait {
   
   abstract class IntQueue {
     def get(): Int
@@ -30,10 +30,10 @@ class Trait {
   trait Filtering extends IntQueue {
     abstract override def put(x: Int): Unit = { if (x >= 0) super.put(x) }
   }
-}
 
-object Trait {
   def main(args: Array[String]): Unit = {
-    
+    // 믹스인 순서가 중요. 오른쪽부터 먼저 적용.
+    val queue = new BasicIntQueue with Incrementing with Filtering    // 필터링 먼저 하고 1더한다.
+    val queue2 = new BasicIntQueue with Filtering with Incrementing    // 1 더하고 필터링한다.
   }
 }
