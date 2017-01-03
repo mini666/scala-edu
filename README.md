@@ -178,3 +178,61 @@ while ((line = readLine()) != "") // 작동하지 않음.
     * 변수 정의에서 패턴 사용하기. 
     * case 시퀀스로 부분 함수 만들기
     * for 표현식에서 패턴 사용.
+* 리스트
+  * 스칼라 리스트 타입은 공변적(Covariant)이다. 이는 S 타입이 T 타입의 서브타입이면 List[S]도 List[T]의 서브타입.
+  * 빈 리스트는 List[Nothing].
+  * 리스트는 Nil과 ::(콘즈)로 생성 가능. 콘즈는 중위 연산자이다.
+  * 리스트의 기본 연산은 head/tail/isEmpty. head/tail은 비어있지 않은 리스트에서만 가능.
+  * List 클래스의 1차 메서드 - 어떤 메서드가 함수를 인자로 받지 않는다면 그 메서드를 1차 메서드라 부른다.
+    * 두 리스트 연결하기
+      ::: - 두 리스트를 더한다. 자바의 addAll.
+    * 분할 정복 원칙.
+    * 리스트 길이 구하기 - length는 비교적 비싼 연산. 리스트 원소 개수만큼 시간이 걸린다. isEmpty가 더 효율적.
+    * 리스트 양 끝에 접근하기 - init와 last. last는 head와 유사하게 가장 마지막 원소. init은 tail과 유사하게 마지막 원소를 제외한 나머지 원소들.
+    * 리스트 뒤집기 - reverse
+    * 접두사와 접미사 : drop, task, splitAt
+      * drop : xs drop n - 첫번째에서 n번째까지 원소를 ㅔㅈ외한 xs 리스트의 모든 원소 반환
+      * task : xs take n - xs 리스트의 처음부터 n번째가지 원소를 반환
+      * splitAt : 주어진 인덱스 위치에서 리스트를 분할해서 두 리스트가 들어 있는 순서쌍을 반환. xs splitAt n = xs take n, xs drop n
+    * 원소 선택: apply와 indices
+      * List apply n = List(n). n값에 비례하여 시간이 걸리기 때문에 자주 사용되지 않는다.
+      * indicess는 유효한 모든 인덱스 리스트를 반환.
+    * flatten - 리스트의 리스트를 한 리스트로 만들기
+    * zip과 unzip - 두 리스트를 순서쌍으로 묶기. 길이가 다른 경우 남는 것은 버린다.
+      * zipWithIndex - 인덱스와 함께 순서쌍으로 만듦.
+    * toString, mkString
+    * iterator, toArray, copyToArray - 리스트 변환.
+      * copyToArray는 리스트 원소를 어떤 배열의 특정 지짐부터 연속적으로 복사 - xs copyToArray (arr, start)
+  * List 클래스의 고차 메서드.
+    * map, flatMap, foreach
+      * map, flatMap은 T => U 인 함수를 인자로 받고, foreach는 결과가 Unit 인 함수를 받는다.
+    * filter, partition, find, takeWhile, dropWhile, span
+      * filter : T => Boolean 타입의 함수를 받는다.
+      * partition : filter와 같지만, 리스트의 순서쌍을 반환한다. 순서쌍에서 한 리스트는 술어(Predicate)가 true인 원소를 포함하며, 나머지 하나는 술어가 falsedls 원소를 포함한다.
+        * xs partition p = (xs filter p, xs filter (!p()))
+      * find : filter와 비슷하지만 주어진 술어 함수를 만족하는 모든 원소를 반환하지 않고 만족하는 첫번째 원소만 반환한다. Option[T](Some(x), None)를 반환한다.
+      * takeWhile, dropWhile도 술어 함수를 받는다.
+        * takeWhile은 리스트에서 술어를 만족하는 가장 긴 접두사를 반환하고 dropWhile은 제거한다.
+    * forall, exists : 리스트 전체에 대한 술어
+      forall은 술어함수를 받아 리스트의 모든 원소가 술어함수를 만족할때 결과가 true이다. exists는 하나라도 만족하면 true이다.
+    * /:(왼쪽폴드), :/(오른쪽폴드) : 리스트 폴드.
+      * 리스트의 원소들을 어떤 연산자를 가지고 결합히는 것. 결합법칙이 성립하는 경우 왼쪽/오른쪽 폴드는 동일한 결과가 나오나 효율은 다를 수 있다.
+      * 슬래시의 방향이 각각 오른쪽 또는 왼쪽으로 치우친 트리의 그림과 비슷. 콜론의 위치에 따라서 결합 방향이 정해짐. 시작값을 콜론이 있는 쪽에 넣으면 된다.
+      * foldLeft, foldRight 메서드가 동일한 기능을 수행.
+    * sortWith : 리스트 정렬.
+      * xs sortWith before 연산에서 before는 비교함수.
+      * merge sort를 수행한다.
+  * List 객체의 메서드.
+    * List.apply : List(1, 2, 3)
+    * List.range : List.range(from, until [, gap]) until 은 포함되지 않는다. 세번째 인자는 증감치.
+    * List.fill : 같은 원소의 복사본을 0번 이상 반복한 리스트를 만듦.
+      * List.fill(생성할 리스트의 길이)(반복할 원소)
+      * List.fill(2, 3)('b') : 다차원 리스트 생성. List(List(b, b, b), List(b, b, b))
+    * List.tabulate : 제공된 함수로 계산한 원소의 리스트를 생성. fill과 동일하나 원소가 아닌 함수로 작업.
+    * List.concat : 여러 리스트를 연결한다.
+  * 여러 리스트를 함께 처리
+    * 튜플에 있는 zipped 메서드는 단일 리스트가 아닌 여러 리스트에서 동작. (List(10, 20), List(3, 4, 5)).zippped.map(_ * _) => List(30, 80)
+    * zipped 한 함수는 map, exists, forall 등.
+  * 스칼라의 타입 추론 알고리즘 이해
+    * 스칼라의 타입 추론은 흐름기반(Flow Based)으로 동작한다. 메서드 적용인 m(args)에서, 타입 추론 로직은 메서드 m의 타입이 알려져 있는지를 먼저 검사. 만약 m에 타입이 있다면 그타입으로 부터 메서드에 적용할 인자의 예상 타입을 추론.
+    * 함수 파라미터와 일반 파라미터가 있는 다형성 메서드 설계시 함수 인자를 별도의 커링한 파라미터 목록으로 맨 마지막에 위치 시킨다. <= 타입 추론 가능.
