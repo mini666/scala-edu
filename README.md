@@ -236,3 +236,71 @@ while ((line = readLine()) != "") // 작동하지 않음.
   * 스칼라의 타입 추론 알고리즘 이해
     * 스칼라의 타입 추론은 흐름기반(Flow Based)으로 동작한다. 메서드 적용인 m(args)에서, 타입 추론 로직은 메서드 m의 타입이 알려져 있는지를 먼저 검사. 만약 m에 타입이 있다면 그타입으로 부터 메서드에 적용할 인자의 예상 타입을 추론.
     * 함수 파라미터와 일반 파라미터가 있는 다형성 메서드 설계시 함수 인자를 별도의 커링한 파라미터 목록으로 맨 마지막에 위치 시킨다. <= 타입 추론 가능.
+* 컬렉션
+  * 시퀀스 - 순서가 정해진 데이터 그룹
+    * 리스트(List) : 앞부분에 빠르게 원소를 삭제하거나 추가할 수 있다. 리스트를 순차적으로 따라가야만 하기 때문에 임의의 위치에 접근할 때는 빠르지 않다.
+    * 배열(Aray) : 괄호()를 사용하여 원소에 접근. 배열을 반환하는 자바메서드도 자연스럽게 사용.
+    * 리스트버퍼(ListBuffer) : 변경가능한 객체. 원소를 추가할 필요가 있을때 리스트보다 더 효율적으로 처리. 앞위로 원소를 추가하는데 상수 시간이 소요. += 연산자를 사용해 원소를 뒤에 추가. +=: 연산자로 원소를 앞에 추가. toList 메서드로 List 객체 얻을 수 있음.
+    * ArrayBuffer : Array와 같으나 처음과 끝에 원소를 추가/삭제할 수 있다. 구현을 감싸주는 층 때문에 속도가 다소 느리다. 배앨의 모든 연산을 사용할 수 있다. 원소의 추가 삭제에는 상수 시간이 걸리나 버퍼의 내용을 저장하기 위해 새로운 배열을 할당해야 할 경우 선형 시간이 소요.
+    * 문자열(StringOps를 통함) : Predef에 String을 StringOps로 바꾸는 암시적 변환이 있다.
+  * 집합(Set)과 맵(Map)
+    * 집합의 사용
+    
+    ```
+    val nums = Set(1, 2, 3)       : 생성
+    nums + 5                      : 원소 추가
+    numss - 3                     : 원소 삭제 
+    nums ++ List(5, 6)            : 여러 원소 추가
+    nums -- List(1, 2)            : 여러 원소 삭제
+    nums & Set(1, 3, 5, 7)        : 교집합을 구한다.
+    nums.size                     : 크기
+    nums.contains(3)              : 포함 여부
+    val words = scala.collection.mutable.Set.empty[String]  : 변경 가능한 빈 집합 생성
+    words += "the"                : 원소 추가
+    words -+ "the"                : 원소 삭제
+    words ++= List("do", "re", "mi") : 여러 원소 추가
+    words --= List("do", "re")    : 여러 원소 삭제
+    words.clear                   : 모든 원소 제거
+    ```
+
+    * 맵의 사용
+
+    ```
+    val nums = Map("i" -> 1, 'ii' -> 2)
+    nums + ("vi" -> 6)
+    nums - "ii"
+    nums ++ List("iii" -> 3, "v" -> 5)
+    nums -- List("i", "ii")
+    nums.size
+    nums.contains("ii")
+    nums("ii")
+    nums.keys
+    nums.keySet
+    nums.values
+    nums.isEmpty
+    val words = scala.collection.mutable.Map.empty[String, Int]
+    words += ("one" -> 1)
+    words -= "one"
+    words ++= List("one" -> 1, "two" -> 2, "three" -> 3)
+    words --= List("one", "two")
+    ```
+
+    * 디폰트 집합과 맵 - 변경가능한 경우 HashSet이나 HashMap을 반환. 변경 불가능한 경우 팩토리(apply)에 넘기는 원소의 수에 따라 구현체가 달라짐. 성능을 극대화하기 위함이고 5개 이상부터는 HashSet/Map을 사용.
+    * 정렬된 집합과 맵
+      * SortedSet, SortedMap 트레이트 제공
+      * 구현은 TreeSet과 TreeMap. red-black tree를 사용
+      * 집합이나 맵의 키는 반드시 Ordered 트레이트를 홉합하거나 암시적으로 Ordered 트레이트로 변환 가능해야 함.
+  * 변경 가능 컬렉션과 변경 불가능 컬렉션 비교
+    * Immutable이 더 추론하기 쉽다.
+    * 원소의 수가 적다면 Immutable이 크기가 적고 빠르다.
+      * 변경가능한 빈 맵의 디폴트 구현인 HashMap은 80바이트이고 원소를 하나 추가할 때마다 16바이트가 더 든다.
+      * 변경 불가능한 빈 맵은 싱글톤 객체 하나를 모든 참조가 공유하기 때문에 기본적으로 포인터 필드 하나만큼만 메모리가 필요. 변경 불가능한 맵이나 집합의 크기가 4일 때까지는 별도의 객체를 사용. 보통 컬렉션에 저장한 원소의 개수에 따라 16~40바이트 정도를 차지.
+      * 변경 불가능한 집합이나 맵은 += 메서드를 지원하지 않지만 변경가능한 클래스로의 전환을 손쉽게 하기 위해서 특별히 해석해 준다. a += b => a = a + b. 이때 val이 아닌 var로 선언해야 함.
+  * 컬렉션 초기화
+    * 팩토리 메서드가 정하는 타입과 다른 타입의 컬렉션을 만들때는 명시적으로 타입을 지정해 준다. `val stuff = Set[Any](42)`
+    * 리스트를 Set에 추가할때. val treeSet = TreeSet(List)는 되지 않으므로 `val treeSet = TreeSet[String]() ++ colors`와 같이 한다.
+    * 배열이나 리스트로 바꾸기
+      * 배열을 원하면 toArray, 리스트를 원하는 toList 호출.모든 원소를 복사하기 때문에 크기가 큰 경우 느릴 수 있음.
+    * 변경 가능한 집합(맵)과 변경 불가능한 집합(맵) 사이의 변환 - Set에 List를 추가하는 것과 같은 방식으로 처리.
+  * 튜플
+    * 
