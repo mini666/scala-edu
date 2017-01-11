@@ -311,12 +311,42 @@ while ((line = readLine()) != "") // 작동하지 않음.
     * **var x**에 대한 Getter는 **x**이고 Setter는 **x_=**이다. 필드는 private[this]라는 표시가 붙는다.
     * 멤버변수 초기화에는 _ 사용해야 한다. 생략하면 추상 변수가 된다.
 * 타입 파라미터화
-  * 
-
-
-
-
-
+  * 정보은닉
+    * 비공개 생성자와 팩토리 메서드 - 클래스 파라미터 목록 앞에 private 수식자를 붙여서 주생성자를 숨길 수 있다. - 클래스 자신과 동반객체에서만 접근 가능.
+  * 변성 표기
+    * **S가 T의 서브타입이라면 Queue[S]를 Queue[T]의 서브타입으로 간주하는 것을 공변적(Covariant)**이라 한다.
+    * 스칼라에서 제네릭은 기본적으로 무공변(nonvariant)이다. 때문에 Queue[String]을 Queue[AnyRef]대신 사용할 수 없다. Queue[**+T**]로 해야 공변적이된다.
+    * **-** 접두사를 붙이면 반공변(Contravariant)이 된다. T가 S의 서브 타입인 경우 Queue[S]가 Queue[T]의 서브타입이라는 뜻.
+    * 자바는 배열을 공변(Covariance)적으로 다루는 반면 스칼라는 무공변(Nonvariance)으로 다룬다.
+    
+    ```
+    String[] a1 = { " abcd" };          // val a1 = Array("abcd")
+    Object[] a2 = a1;                   // val a2: Array[Any] = a1      // 스칼라는 여기서 컴파일 오류.
+    a2[0] = new IntegerA(17);           // a2(0) = 17
+    String s = a1[0];                   // val s =a1(0)
+    ```
+    
+    자바는 잘 컴파일 되나 Runtime시에 에러 발생하고 스칼라는 컴파일도 되지 않는다. 자바는 Runtime시에 원소를 배열에 저장할 때 타입을 체크. 
+    자바에서 배열을 공변적으로 처리한 이유는 `void sort(Object[] a, Comparator cmp) { ... }` 에 배열의 타입에 상관없이 넘기기 위해서. Generic이 도입된 이후 의미 없어졌으나 하위호환성 위해 존재.
+    스칼라에서는 이런 자바와의 호환성을 위해 슈퍼타입의 배열로 바꾸는 기능 제공. **val a2: Array[Object] = a1.asInstanceOf[Array[Object]]**
+  * 변성 표기 검사
+    * 재할당 가능한 필드는 +로 표시한 타입 파라미터를 메서드 파라미터에 사용할 수 없다.
+    * 재할당 가능한 필드 *var x: T* 를 게터 메서드 *def x: T*와 세터 메서드 *def x_=(y: T)*로 취급하므로 해당 타입은 공변적일 수 없다.
+  * 하위 바운드
+    * `U >: T` U는 T의 슈퍼 타입이어야만 한다.
+  * 반공변성
+    * `trait OutputChannel[-T] { def write(x: T) }` AnyRef의 출력채널은 String을 출력하는 채널의 서브타입.
+    * OutputChannel[String]이 필요한 곳이라면 대신 OutputChannel[AnyRef]를 바꿔 넣어도 문제가 없다. 반대로, OutputChannel[AnyRef]가 필요한 곳에 OutputChannel[String]을 넣은 것은 안전하지 않다. OutputChannel[AnyRef] 채널에는 아무 객체나 쓸 수 있지만 OutputChannel[String] 채널에는 오직 문자열만 쓸 수 있기 때문.
+    * **U** 타입의 값이 필요한 모든 경우를 **T** 타입의 값으로 대치할 수 있다면, T 타입을 U 타입의 서브타입으로 가정해도 안전하다.
+    * 리스코프 치환 원칙(Liskov Substitution Principle) : T가 U의 모든 연산을 지원하고 모든 T의 연산이 그에 대응하는 U의 연산에 비해 더 적게 요구하고, 더 많이 제공하는 경우 리스코프 치환 원칙이 성립한다. 
+    * 함수 인자는 반공변적, 리턴 타입은 공변적이다.
+  * 객체의 비공개 데이터
+    * 스칼라가 +나 - 변성 표시가 있는 타입 파라미터를 같은 변성의 위치에서만 사용하는지 검사할때 객체 전용 정의(private [this])는 제외하고 검사.
+  * 상위 바운드
+    * <: 사용. 특정 클래스/트레이트를 혼합하도록 요구하기 위해 사용.
+* 추상 멤버
+  * 메서드뿐 아니라 추상 필드도 정의할 수 있으며 클래스나 트레이트의 멤버로 추상 타입을 정의할 수도 있음.
+  * val, var, 메서드, 타입 4가지 추상 멤버 존재.
 
 
 
