@@ -1,4 +1,4 @@
-#. 함수와 클로저
+# [함수와 클로저](https://github.com/mini666/scala-edu/blob/master/src/main/scala/edu/scala/ch8/FunctionAndClosure.scala)
 ## 특별한 형태의 함수 호출
 ### 반복 파라미터
 함수의 마지막 파라미터 반복 가능.  

@@ -13,3 +13,6 @@ buildNumber.properties
 .project
 .settings/
 .cache-tests
+
+.idea
+src/*/*.iml
