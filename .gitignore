@@ -15,4 +15,5 @@ buildNumber.properties
 .cache-tests
 
 .idea
+*.iml
 src/*/*.iml
